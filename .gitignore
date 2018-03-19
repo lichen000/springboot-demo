@@ -1,0 +1,6 @@
+/.idea/
+/target
+src/test/
+logs/
+tomcattmpdir/
+*.iml
