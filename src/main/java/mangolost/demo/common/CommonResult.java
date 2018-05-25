@@ -9,10 +9,21 @@ public class CommonResult implements Serializable {
 
 	public static final long serialVersionUID = 1L;
 
-	private int code = 200;
+    private int code = 200;
 	private String message = "OK";
 	private Object data;
 	private long ts = System.currentTimeMillis();
+
+	public CommonResult() {
+	    super();
+    }
+
+    public CommonResult(int code, String message, Object data, long ts) {
+        this.code = code;
+        this.message = message;
+        this.data = data;
+        this.ts = ts;
+    }
 
 	public void setCodeAndMessage(int code, String message) {
 		this.code = code;
@@ -50,7 +61,6 @@ public class CommonResult implements Serializable {
 	public void setTs(long ts) {
 		this.ts = ts;
 	}
-
 
 	@Override
 	public String toString() {

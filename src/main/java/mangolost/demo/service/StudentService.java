@@ -2,17 +2,18 @@ package mangolost.demo.service;
 
 import mangolost.demo.dao.StudentJpaDao;
 import mangolost.demo.entity.Student;
-import org.hibernate.Query;
-import org.hibernate.jpa.HibernateEntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by chen.li200 on 2018-03-19
@@ -20,19 +21,24 @@ import java.util.Map;
 @Service
 public class StudentService {
 
-	@Autowired
-	private StudentJpaDao studentJpaDao;
+	private final StudentJpaDao studentJpaDao;
 
 	@PersistenceContext
-	private HibernateEntityManager em;
+	private EntityManager entityManager;
 
-	/**
+    @Autowired
+    public StudentService(StudentJpaDao studentJpaDao) {
+        System.out.println("aaaa");
+        this.studentJpaDao = studentJpaDao;
+    }
+
+    /**
 	 *
 	 * @param id
 	 * @return
 	 */
-	public Student get(Integer id) {
-		return studentJpaDao.getOne(id);
+	public Optional<Student> get(Integer id) {
+		return studentJpaDao.findById(id);
 	}
 
 	public Page<Student> getAllPage(Pageable pageable) {
@@ -41,19 +47,21 @@ public class StudentService {
 
 	/**
 	 * @param map
-	 * @param student
 	 * @return
 	 */
-	public List<Student> queryByParameters(Map<String, Object> map, Student student) {
+	public List<Student> queryByParameters(Map<String, Object> map) {
 
 		StringBuilder hql = new StringBuilder("from Student student where 1 = 1 ");
 		for (String key : map.keySet()) {
 			String condition = " and student." + key + " = :" + key + " ";
 			hql.append(condition);
 		}
-		Query query = em.getSession().createQuery(hql.toString());
-		query.setProperties(student);
-		return query.list();
+		Query query = entityManager.createQuery(hql.toString());
+        for (String key : map.keySet()) {
+            query.setParameter(key, map.get(key));
+        }
+
+        return query.getResultList();
 	}
 
 	/**

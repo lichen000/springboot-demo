@@ -1,6 +1,7 @@
 package mangolost.demo.controller;
 
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import mangolost.demo.common.CommonConstant;
 import mangolost.demo.common.CommonResult;
 import mangolost.demo.common.helper.ApiStatusCode;
@@ -24,8 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by chen.li200 on 2018-03-19
@@ -38,28 +38,39 @@ public class StudentController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(StudentController.class);
 
-	@Autowired
-	private StudentService studentService;
+	private final StudentService studentService;
 
-	@RequestMapping("get")
-	public Object get(@Range @RequestParam int id, CommonResult commonResult, String callback) {
-		Student student = studentService.get(id);
-		if (student == null) {
+    @Autowired
+    public StudentController(StudentService studentService) {
+        this.studentService = studentService;
+    }
+
+    /**
+     *
+     * @param id
+     * @param commonResult
+     * @return
+     */
+    @RequestMapping("get")
+	public CommonResult get(@Range @RequestParam int id, CommonResult commonResult) {
+
+	    Optional<Student> student = studentService.get(id);
+		if (!student.isPresent()) {
 			commonResult.setMessage(CommonMessage.NO_RECORD_FOUND);
 		}
 		commonResult.setData(student);
-		return JsonPUtils.doJsonP(commonResult, callback);
+        return commonResult;
 	}
 
 	/**
+     *
 	 * @param pageable
 	 * @param commonResult
-	 * @param callback
 	 * @return
 	 */
 	@RequestMapping("getall")
-	public Object getAllPage(@PageableDefault(value = CommonConstant.DEFAULT_PAGE_SIZE, sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable,
-							 CommonResult commonResult, String callback) {
+	public CommonResult getAllPage(@PageableDefault(value = CommonConstant.DEFAULT_PAGE_SIZE, sort = {"id"}, direction = Sort.Direction.ASC) Pageable pageable,
+							 CommonResult commonResult) {
 		Page<Student> page = studentService.getAllPage(pageable);
 
 		List<Student> students = page.getContent();
@@ -67,73 +78,87 @@ public class StudentController {
 			commonResult.setMessage(CommonMessage.NO_RECORD_FOUND);
 		}
 		commonResult.setData(page);
-		return JsonPUtils.doJsonP(commonResult, callback);
+		return commonResult;
 	}
 
 	/**
 	 * 按照请求中指定的任意属性查找对应的student
 	 *
 	 * @param request
-	 * @param student
+	 * @param queryParams
 	 * @param commonResult
-	 * @param callback
 	 * @return
 	 */
 	@RequestMapping("query")
-	public Object query(HttpServletRequest request, Student student, CommonResult commonResult, String callback) {
+	public Object query(HttpServletRequest request, @RequestParam String queryParams, CommonResult commonResult) {
 
-		Map map = request.getParameterMap();
+        Map<String, Object> map = new GsonBuilder()
+                .serializeNulls()
+                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create()
+                .fromJson(queryParams, Map.class);
 		if (map.isEmpty()) {
 			commonResult.setCodeAndMessage(ApiStatusCode.PARAM_ERROR, CommonMessage.PARAM_ERROR);
-			return JsonPUtils.doJsonP(commonResult, callback);
+			return commonResult;
 		}
+
+		for (String key: map.keySet()) {
+		    Object param = map.get(key);
+		    if (param instanceof Double) {
+		        if (((Double) param).longValue() == (Double) param) {
+		            map.put(key, ((Double) param).intValue());
+                }
+            }
+        }
+
 		List<Student> students;
 		try {
-			students = studentService.queryByParameters(map, student);
+			students = studentService.queryByParameters(map);
 		} catch (Exception e) {
 			LOGGER.error("student query error", e);
 			commonResult.setCodeAndMessage(ApiStatusCode.INTERNAL_SERVER_ERROR, "查询错误");
 			commonResult.setData(null);
-			return JsonPUtils.doJsonP(commonResult, callback);
+			return commonResult;
 		}
 		if (students == null || students.size() == 0) {
 			commonResult.setMessage(CommonMessage.NO_RECORD_FOUND);
 		}
 		commonResult.setData(students);
-		return JsonPUtils.doJsonP(commonResult, callback);
+		return commonResult;
 	}
 
-
 	/**
+     *
 	 * @param student
 	 * @param commonResult
-	 * @param callback
 	 * @return
 	 */
 	@RequestMapping(value = "add")
-	public Object add(Student student, CommonResult commonResult, String callback) {
+	public Object add(Student student, CommonResult commonResult) {
 
-		Student entity = studentService.add(student);
-		commonResult.setData(entity);
-		return JsonPUtils.doJsonP(commonResult, callback);
-	}
+        Student entity = studentService.add(student);
+        commonResult.setData(entity);
+        return commonResult;
+    }
 
 	/**
+     *
 	 * @param id
 	 * @param updatedParams
 	 * @param commonResult
-	 * @param callback
 	 * @return
 	 */
 	@RequestMapping(value = "update")
 	public Object update(@Range @RequestParam int id,
 						 @RequestParam String updatedParams,
-						 CommonResult commonResult, String callback) {
+						 CommonResult commonResult) {
 
-		Student entity = studentService.get(id); //从数据库中获取的原student
-		if (entity == null) {
+		Optional<Student> optionalStudent = studentService.get(id); //从数据库中获取的原student
+		if (!optionalStudent.isPresent()) {
 			commonResult.setCodeAndMessage(ApiStatusCode.INTERNAL_SERVER_ERROR, "要更新的对象并不存在");
 		} else {
+
+		    Student entity = optionalStudent.get();
 
 			//通过参数构建的一个student，只有给定参数有值，其他都是null
 			Student student = new GsonBuilder()
@@ -161,7 +186,7 @@ public class StudentController {
 			commonResult.setData(entity);
 
 		}
-		return JsonPUtils.doJsonP(commonResult, callback);
+		return commonResult;
 	}
 
 	/**
@@ -175,9 +200,8 @@ public class StudentController {
 	@RequestMapping(value = "delete")
 	public Object delete(@Range @RequestParam int id, CommonResult commonResult, String callback) {
 
-		Student entity = studentService.get(id);
-
-		if (entity != null) {
+		Optional<Student> entity = studentService.get(id);
+		if (entity.isPresent()) {
 			studentService.delete(id);
 		} else {
 			commonResult.setCodeAndMessage(ApiStatusCode.INTERNAL_SERVER_ERROR, "要删除的对象并不存在");

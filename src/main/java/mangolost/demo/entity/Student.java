@@ -1,5 +1,6 @@
 package mangolost.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name="t_student")
+@JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" })
 public class Student implements Serializable {
 
 	public static final long serialVersionUID = 1L;
