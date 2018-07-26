@@ -1,7 +1,6 @@
 package mangolost.demo.controller;
 
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
 import mangolost.demo.common.CommonConstant;
 import mangolost.demo.common.CommonResult;
 import mangolost.demo.common.helper.ApiStatusCode;
@@ -103,6 +102,8 @@ public class StudentController {
 		}
 
 		for (String key: map.keySet()) {
+
+
 		    Object param = map.get(key);
 		    if (param instanceof Double) {
 		        if (((Double) param).longValue() == (Double) param) {
@@ -110,6 +111,8 @@ public class StudentController {
                 }
             }
         }
+
+
 
 		List<Student> students;
 		try {
