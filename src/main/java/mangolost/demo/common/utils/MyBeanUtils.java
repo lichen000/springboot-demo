@@ -15,14 +15,12 @@ public class MyBeanUtils extends BeanUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MyBeanUtils.class);
 
 	/**
-	 * 根据传入的对象，以及属性与属性值键值对，修改目标对象的属性值
-	 *
+	 * 根据传入的对象，以及属性与属性值键值对，修改目标对象的属性值	 *
 	 * @param target      需要修改的对象
-	 * @param source      保存要修改字段值的对象
 	 * @param map         属性名与属性值 键值对
 	 * @param entityClass 对象的类型
 	 */
-	public static void changeProps(Object target, Object source, Map<String, Object> map, Class entityClass) {
+	public static void changeProps(Object target, Map<String, Object> map, Class entityClass) {
 
 		for (String key : map.keySet()) {
 			Field field = null;
@@ -34,7 +32,7 @@ public class MyBeanUtils extends BeanUtils {
 			}
 			field.setAccessible(true);
 			try {
-				field.set(target, field.get(source));
+				field.set(target, map.get(key));
 			} catch (IllegalAccessException e) {
 				LOGGER.error("illegal access for field：" + key, e);
 			}

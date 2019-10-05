@@ -1,9 +1,10 @@
-package mangolost.demo.config;
+package mangolost.demo.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 /**
  * CORS跨域配置
@@ -12,6 +13,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class MyCorsConfig {
 
+	/**
+	 *
+	 * @return
+	 */
 	@Bean
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
@@ -19,10 +24,19 @@ public class MyCorsConfig {
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/api/**")
 						.allowedOrigins("*")
-						.allowedMethods("PUT", "GET", "HEAD", "OPTIONS")
-						.allowCredentials(true)
+						.allowedMethods("PUT", "GET", "POST", "HEAD", "OPTIONS", "DELETE")
+						.allowCredentials(false)
 						.maxAge(3600);
 			}
 		};
+	}
+
+	@Configuration
+	public static class WebSocketConfig {
+
+		@Bean
+		public ServerEndpointExporter serverEndpointExporter() {
+			return new ServerEndpointExporter();
+		}
 	}
 }

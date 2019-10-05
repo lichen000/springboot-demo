@@ -1,4 +1,4 @@
-package mangolost.demo.config;
+package mangolost.demo.common.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -16,15 +16,14 @@ import javax.sql.DataSource;
 @Configuration
 public class DataSourceConfig {
 
-	@Bean(name = "primaryDataSource")
-	@Qualifier("primaryDataSource")
-	@Primary
+	@Bean("primaryDataSource")
 	@ConfigurationProperties(prefix = "primary.datasource")
 	public DataSource primaryDataSource() {
 		return DataSourceBuilder.create().build();
 	}
 
-	@Bean(name = "primaryJdbcTemplate")
+	@Primary
+	@Bean("primaryJdbcTemplate")
 	public JdbcTemplate primaryJdbcTemplate(
 			@Qualifier("primaryDataSource") DataSource dataSource) {
 		return new JdbcTemplate(dataSource);

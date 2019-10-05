@@ -1,4 +1,4 @@
-package mangolost.demo.common;
+package mangolost.demo.common.helper;
 
 import java.io.Serializable;
 
@@ -11,23 +11,22 @@ public class CommonResult implements Serializable {
 
     private int code = 200;
 	private String message = "OK";
-	private Object data;
-	private long ts = System.currentTimeMillis();
+	private Object data = null;
 
 	public CommonResult() {
 	    super();
     }
 
-    public CommonResult(int code, String message, Object data, long ts) {
+    public CommonResult(int code, String message, Object data) {
         this.code = code;
         this.message = message;
         this.data = data;
-        this.ts = ts;
     }
 
-	public void setCodeAndMessage(int code, String message) {
+	public CommonResult setCodeAndMessage(int code, String message) {
 		this.code = code;
 		this.message = message;
+		return this;
 	}
 
 	public int getCode() {
@@ -50,16 +49,9 @@ public class CommonResult implements Serializable {
 		return data;
 	}
 
-	public void setData(Object data) {
+	public CommonResult setData(Object data) {
 		this.data = data;
-	}
-
-	public long getTs() {
-		return ts;
-	}
-
-	public void setTs(long ts) {
-		this.ts = ts;
+		return this;
 	}
 
 	@Override
@@ -68,7 +60,6 @@ public class CommonResult implements Serializable {
 				"code=" + code +
 				", message='" + message + '\'' +
 				", data=" + data +
-				", ts=" + ts +
 				'}';
 	}
 }

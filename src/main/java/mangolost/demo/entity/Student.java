@@ -1,27 +1,20 @@
 package mangolost.demo.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
  * Created by chen.li200 on 2018-03-19
  */
-@Entity
-@Table(name="t_student")
-@JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" })
 public class Student implements Serializable {
 
-	public static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	private Integer id; //主键id
 	private Timestamp createTime; //记录创建时间
 	private Timestamp updateTime; //记录更新时间
-	private String note; //备注
-
 	private String number; //学号
 	private String name;//姓名
 	private Integer age; //年龄
@@ -30,19 +23,16 @@ public class Student implements Serializable {
 		super();
 	}
 
-	public Student(Integer id, Timestamp createTime, Timestamp updateTime, String note, String number, String name, Integer age) {
+	public Student(Integer id, Timestamp createTime, Timestamp updateTime, String number, String name, Integer age) {
 		super();
 		this.id = id;
 		this.createTime = createTime;
 		this.updateTime = updateTime;
-		this.note = note;
 		this.number = number;
 		this.name = name;
 		this.age = age;
 	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Integer getId() {
 		return id;
 	}
@@ -51,7 +41,6 @@ public class Student implements Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "create_time", insertable = false, updatable = false)
 	public Timestamp getCreateTime() {
 		return createTime;
 	}
@@ -60,7 +49,6 @@ public class Student implements Serializable {
 		this.createTime = createTime;
 	}
 
-	@Column(name = "update_time", insertable = false, updatable = false)
 	public Timestamp getUpdateTime() {
 		return updateTime;
 	}
@@ -69,16 +57,6 @@ public class Student implements Serializable {
 		this.updateTime = updateTime;
 	}
 
-	@Column(name = "note")
-	public String getNote() {
-		return note;
-	}
-
-	public void setNote(String note) {
-		this.note = note;
-	}
-
-	@Column(name = "number")
 	public String getNumber() {
 		return number;
 	}
@@ -87,7 +65,6 @@ public class Student implements Serializable {
 		this.number = number;
 	}
 
-	@Column(name = "name")
 	public String getName() {
 		return name;
 	}
@@ -96,7 +73,6 @@ public class Student implements Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "age")
 	public Integer getAge() {
 		return age;
 	}

@@ -1,5 +1,6 @@
 <configuration scan="true" scanPeriod="10 seconds">
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <property name="LOG_HOME" value="logs"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -8,10 +9,10 @@
     </appender>
 
     <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>logs/info.log</File>
+        <File>${LOG_HOME}/info.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/info-%d{yyyyMMdd}.log</fileNamePattern>
-            <maxHistory>10</maxHistory>
+            <fileNamePattern>${LOG_HOME}/info-%d{yyyyMMdd}.log</fileNamePattern>
+            <maxHistory>100</maxHistory>
         </rollingPolicy>
         <layout class="ch.qos.logback.classic.PatternLayout">
             <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%msg%n
@@ -23,10 +24,10 @@
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>ERROR</level>
         </filter>
-        <File>logs/error.log</File>
+        <File>${LOG_HOME}/error.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/error-%d{yyyyMMdd}.log</fileNamePattern>
-            <maxHistory>10</maxHistory>
+            <fileNamePattern>${LOG_HOME}/error-%d{yyyyMMdd}.log</fileNamePattern>
+            <maxHistory>100</maxHistory>
         </rollingPolicy>
         <layout class="ch.qos.logback.classic.PatternLayout">
             <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%msg%n

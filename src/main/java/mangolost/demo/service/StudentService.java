@@ -1,19 +1,13 @@
 package mangolost.demo.service;
 
-import mangolost.demo.dao.StudentJpaDao;
+import mangolost.demo.common.page.Page;
 import mangolost.demo.entity.Student;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * Created by chen.li200 on 2018-03-19
@@ -21,47 +15,45 @@ import java.util.Optional;
 @Service
 public class StudentService {
 
-	private final StudentJpaDao studentJpaDao;
+	private final JdbcTemplate mysqlJdbcTemplate;
 
-	@PersistenceContext
-	private EntityManager entityManager;
+	public StudentService(@Qualifier("primaryJdbcTemplate") JdbcTemplate mysqlJdbcTemplate) {
+		this.mysqlJdbcTemplate = mysqlJdbcTemplate;
+	}
 
-    @Autowired
-    public StudentService(StudentJpaDao studentJpaDao) {
-        System.out.println("aaaa");
-        this.studentJpaDao = studentJpaDao;
-    }
-
-    /**
+	/**
 	 *
 	 * @param id
 	 * @return
 	 */
-	public Optional<Student> get(Integer id) {
-		return studentJpaDao.findById(id);
-	}
-
-	public Page<Student> getAllPage(Pageable pageable) {
-		return studentJpaDao.findAll(pageable);
+	public Student get(int id) {
+		String sql = "select * from t_student where record_status = 1 and id = ?";
+		List<Student> list = mysqlJdbcTemplate.query(sql, new Object[]{id}, new BeanPropertyRowMapper<>(Student.class));
+		if (list != null && list.size()> 0) {
+			return list.get(0);
+		}
+		return null;
 	}
 
 	/**
-	 * @param map
+	 *
+	 * @param page
 	 * @return
 	 */
-	public List<Student> queryByParameters(Map<String, Object> map) {
-
-		StringBuilder hql = new StringBuilder("from Student student where 1 = 1 ");
-		for (String key : map.keySet()) {
-			String condition = " and student." + key + " = :" + key + " ";
-			hql.append(condition);
+	public Page<Student> getAllPage(Page<Student> page) {
+		String sqlCount = "select count(*) from t_student where record_status = 1";
+		int count = mysqlJdbcTemplate.queryForObject(sqlCount, Integer.class);
+		if (count > 0) {
+			String sqlData = "select * from t_student where record_status = 1 order by id asc limit ?, ?";
+			int pageSize = page.getPageSize(), pageNumber = page.getPageNumber();
+			int offset = (pageNumber - 1) * pageSize;
+			List<Student> list = mysqlJdbcTemplate.query(sqlData, new Object[]{offset, pageSize}, new BeanPropertyRowMapper<>(Student.class));
+			int totalPages = (count - 1) / pageSize + 1;
+			page.setTotalCount(count);
+			page.setTotalPages(totalPages);
+			page.setResult(list);
 		}
-		Query query = entityManager.createQuery(hql.toString());
-        for (String key : map.keySet()) {
-            query.setParameter(key, map.get(key));
-        }
-
-        return query.getResultList();
+		return page;
 	}
 
 	/**
@@ -69,7 +61,10 @@ public class StudentService {
 	 * @return
 	 */
 	public Student add(Student entity) {
-		return studentJpaDao.save(entity);
+		String sql = "insert into t_student (`number`, `name`, `age`) values (?, ?, ?)";
+		mysqlJdbcTemplate.update(sql, entity.getNumber(), entity.getName(), entity.getAge());
+		int id = mysqlJdbcTemplate.queryForObject("SELECT LAST_INSERT_ID()", Integer.class);//获得刚刚插入的id
+		return get(id);
 	}
 
 	/**
@@ -77,15 +72,18 @@ public class StudentService {
 	 * @return
 	 */
 	public Student update(Student entity) {
-		entity.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-		return studentJpaDao.save(entity);
+		int id = entity.getId();
+		String sql = "update t_student set `number` = ?, `name` = ?, `age` = ? where record_status = 1 and id = ?";
+		mysqlJdbcTemplate.update(sql, entity.getNumber(), entity.getName(), entity.getAge(), id);
+		return get(id);
 	}
 
 	/**
 	 * @param id
 	 */
-	public void delete(Integer id) {
-		studentJpaDao.deleteById(id);
+	public void delete(int id) {
+		String sql = "update t_student set record_status = 0 where id = ?";
+		mysqlJdbcTemplate.update(sql, id);
 	}
 
 }

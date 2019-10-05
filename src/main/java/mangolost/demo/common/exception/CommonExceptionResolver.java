@@ -1,9 +1,8 @@
-package mangolost.demo.exception;
+package mangolost.demo.common.exception;
 
-import mangolost.demo.common.CommonResult;
+import mangolost.demo.common.helper.CommonResult;
 import mangolost.demo.common.helper.ApiStatusCode;
-import mangolost.demo.common.message.CommonMessage;
-import mangolost.demo.common.utils.ThrowableUtils;
+import mangolost.demo.common.helper.CommonMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -89,11 +88,11 @@ public class CommonExceptionResolver {
 			} else {
 
 				code = ApiStatusCode.INTERNAL_SERVER_ERROR;
-				if ("dev".equals(runMode) || "uat".equals(runMode) || "stg".equals(runMode)) {
-					exMsg += "\r\n" + ThrowableUtils.printStackTraceToString(ex);
+				if ("dev".equals(runMode) || "uat1".equals(runMode)) {
+					exMsg += "\r\n" + ex.toString();
 				}
 				message = CommonMessage.INTERNAL_SERVER_ERROR + exMsg;
-				LOGGER.error("服务器内部异常,api:{}.{}", ex);
+				LOGGER.error("服务器内部异常: ", ex);
 			}
 		} catch (Exception e) {
 			LOGGER.warn("Handling of [" + ex.getClass().getName() + "] resulted in Exception", e);
@@ -109,12 +108,8 @@ public class CommonExceptionResolver {
 	 * @return
 	 */
 	// 返回结果处理, JSON字符串化的CommonResult对象
-	private CommonResult buildCommonResult(Integer code, String message) {
+	private CommonResult buildCommonResult(int code, String message) {
 		CommonResult commonResult = new CommonResult();
-		commonResult.setCode(code);
-		commonResult.setMessage(message);
-		commonResult.setTs(System.currentTimeMillis());
-		commonResult.setData(null);
-		return commonResult;
+		return commonResult.setCodeAndMessage(code, message);
 	}
 }

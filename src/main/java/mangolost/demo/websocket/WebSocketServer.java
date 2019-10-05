@@ -19,7 +19,7 @@ public class WebSocketServer {
     private static final AtomicInteger OnlineCount = new AtomicInteger(0);
 
     // concurrent包的线程安全Set，用来存放每个客户端对应的Session对象。
-    private static CopyOnWriteArraySet<Session> SessionSet = new CopyOnWriteArraySet<>();
+    private static final CopyOnWriteArraySet<Session> SessionSet = new CopyOnWriteArraySet<>();
 
     /**
      * 连接建立成功调用的方法
@@ -83,9 +83,8 @@ public class WebSocketServer {
     /**
      * 群发消息
      * @param message
-     * @throws IOException
-     */
-    public static void BroadCastInfo(String message) throws IOException {
+	 */
+    public static void BroadCastInfo(String message) {
         for (Session session : SessionSet) {
             if (session.isOpen()) {
                 SendMessage(session, message);
@@ -97,9 +96,8 @@ public class WebSocketServer {
      * 指定Session发送消息
      * @param sessionId
      * @param message
-     * @throws IOException
-     */
-    public static void SendMessage(String sessionId, String message) throws IOException {
+	 */
+    public static void SendMessage(String sessionId, String message) {
         Session session = null;
         for (Session s : SessionSet) {
             if (s.getId().equals(sessionId)) {

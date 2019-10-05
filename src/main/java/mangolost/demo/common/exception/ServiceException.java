@@ -1,4 +1,4 @@
-package mangolost.demo.exception;
+package mangolost.demo.common.exception;
 
 import mangolost.demo.common.helper.ApiStatusCode;
 
