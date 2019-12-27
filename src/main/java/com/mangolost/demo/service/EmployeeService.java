@@ -31,7 +31,7 @@ public class EmployeeService {
 	public Employee get(int id) {
 		String sql = "select * from t_employee where record_status = 1 and id = ? limit 1";
 		List<Employee> list = mysqlJdbcTemplate.query(sql, new Object[]{id}, new BeanPropertyRowMapper<>(Employee.class));
-		if (list != null && list.size()> 0) {
+		if (list.size() > 0) {
 			return list.get(0);
 		}
 		return null;

@@ -98,18 +98,7 @@ public class CommonExceptionResolver {
 			LOGGER.warn("Handling of [" + ex.getClass().getName() + "] resulted in Exception", e);
 		}
 
-		return buildCommonResult(code, message);
+		return new CommonResult().setCodeAndMessage(code, message);
 
-	}
-
-	/**
-	 * @param code
-	 * @param message
-	 * @return
-	 */
-	// 返回结果处理, JSON字符串化的CommonResult对象
-	private CommonResult buildCommonResult(int code, String message) {
-		CommonResult commonResult = new CommonResult();
-		return commonResult.setCodeAndMessage(code, message);
 	}
 }
