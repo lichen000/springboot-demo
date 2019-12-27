@@ -1,4 +1,4 @@
-package mangolost.demo.common.helper;
+package com.mangolost.demo.common.helper;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package mangolost.demo.common.utils;
+package com.mangolost.demo.common.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class MyBeanUtils extends BeanUtils {
 				field = entityClass.getDeclaredField(key);
 			} catch (NoSuchFieldException e) {
 				LOGGER.error("没有field：" + key, e);
-				continue; //这里的处理策略是：如果前端传了一个对象中不存在的属性，则忽略它，而不是报错
+				continue; //这里的处理策略是：如果map中有了一个对象中不存在的属性，则忽略它，而不是报错
 			}
 			field.setAccessible(true);
 			try {

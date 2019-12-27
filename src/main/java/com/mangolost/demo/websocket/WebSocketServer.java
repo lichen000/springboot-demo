@@ -1,4 +1,4 @@
-package mangolost.demo.websocket;
+package com.mangolost.demo.websocket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

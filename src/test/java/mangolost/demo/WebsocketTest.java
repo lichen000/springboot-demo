@@ -1,13 +1,14 @@
 package mangolost.demo;
 
-import mangolost.demo.websocket.WebSocketServer;
+import com.mangolost.demo.DemoApplication;
+import com.mangolost.demo.websocket.WebSocketServer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
- * Created by chen.li200 on 2019-10-05
+ * Created by mangolost on 2019-10-05
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = DemoApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)

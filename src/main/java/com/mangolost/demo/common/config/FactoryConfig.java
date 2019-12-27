@@ -1,4 +1,4 @@
-package mangolost.demo.common.config;
+package com.mangolost.demo.common.config;
 
 
 import org.springframework.context.annotation.Bean;

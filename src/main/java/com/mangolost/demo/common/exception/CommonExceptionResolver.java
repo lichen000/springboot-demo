@@ -1,8 +1,8 @@
-package mangolost.demo.common.exception;
+package com.mangolost.demo.common.exception;
 
-import mangolost.demo.common.helper.CommonResult;
-import mangolost.demo.common.helper.ApiStatusCode;
-import mangolost.demo.common.helper.CommonMessage;
+import com.mangolost.demo.common.helper.CommonResult;
+import com.mangolost.demo.common.helper.ApiStatusCode;
+import com.mangolost.demo.common.helper.CommonMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

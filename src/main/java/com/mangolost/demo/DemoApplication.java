@@ -1,4 +1,4 @@
-package mangolost.demo;
+package com.mangolost.demo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

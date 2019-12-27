@@ -1,4 +1,4 @@
-package mangolost.demo.common.helper;
+package com.mangolost.demo.common.helper;
 
 /**
  * Created by mangolost on 2017-04-19

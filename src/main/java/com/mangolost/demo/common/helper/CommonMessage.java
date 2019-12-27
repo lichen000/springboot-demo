@@ -1,4 +1,4 @@
-package mangolost.demo.common.helper;
+package com.mangolost.demo.common.helper;
 
 /**
  * Created by mangolost on 2017-04-02
@@ -6,8 +6,6 @@ package mangolost.demo.common.helper;
 public class CommonMessage {
 
 	public static final String OK_MESSAGE = "OK";
-
-	public static final String NO_RECORD_FOUND = "NO RECORD FOUND：请求成功，找到0条记录 ";
 
 	public static final String PARAM_ERROR = "参数错误：可能由于参数未提供、空值、空格符、类型、格式、范围不符要求 ";
 

@@ -1,4 +1,4 @@
-package mangolost.demo.common.page;
+package com.mangolost.demo.common.page;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -8,14 +8,14 @@ import java.util.List;
 
 /**
  * 分页对象
- * Created by chen.li200 on 2017-11-23
+ * Created by mangolost on 2017-11-23
  */
 public class Page<T> implements Serializable {
 
 	public static final long serialVersionUID = 1L;
 
 	private int pageNumber = 1; //分页页码，默认为1（第一页为1）
-	private int pageSize = 10; //分页大小，默认为20
+	private int pageSize = 10; //分页大小，默认为10
 	private int totalCount = 0; //记录总数
 	private int totalPages = 1; //记录总页数
 	private List<T> result = new ArrayList<>(); //分页结果集

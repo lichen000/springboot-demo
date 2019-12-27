@@ -1,6 +1,6 @@
-package mangolost.demo.common.exception;
+package com.mangolost.demo.common.exception;
 
-import mangolost.demo.common.helper.ApiStatusCode;
+import com.mangolost.demo.common.helper.ApiStatusCode;
 
 /**
  * Created by mangolost on 2017-04-22
